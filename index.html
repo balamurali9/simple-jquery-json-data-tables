@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="favicon.ico">
+
+    <title>PE Reports</title>
+    <!-- Bootstrap core CSS -->
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap theme -->
+    <link href="assets/css/bootstrap-theme.min.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="assets/css/bootstrap-table.css" rel="stylesheet">
+	<link href="assets/css/font-awesome.css" rel="stylesheet">
+	<link href="assets/css/datepicker.min.css" rel="stylesheet">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+	<script src="assets/js/bootstrap-table.js"></script>
+	<script src="assets/js/bootstrap-datepicker.min.js"></script>
+  </head>
+  <body>
+	<nav class="navbar navbar-default" role="navigation">
+	  <!-- Brand and toggle get grouped for better mobile display -->
+	  <div class="navbar-header">
+		<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+		  <span class="sr-only">Toggle navigation</span>
+		  <span class="icon-bar"></span>
+		  <span class="icon-bar"></span>
+		  <span class="icon-bar"></span>
+		</button>
+		<a class="navbar-brand" href="#">PE Reports</a>
+	  </div>
+
+	  <!-- Collect the nav links, forms, and other content for toggling -->
+	  <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+		<div class="col-sm-3 col-md-3">
+		</div>
+		<ul class="nav navbar-nav navbar-right">
+		  <li class="dropdown">
+			<a href="#" class="dropdown-toggle" data-toggle="dropdown">Settings <b class="caret"></b></a>
+			<ul class="dropdown-menu">
+			  <li><a href="#">links</a></li>
+			  <li><a href="#">links</a></li>
+			  <li><a href="#">links</a></li>
+			  <li><a href="#">links</a></li>
+			</ul>
+		  </li>
+		</ul>
+	  </div><!-- /.navbar-collapse -->
+	</nav>
+	<div class="clearfix"></div>
+	<div class="panel panel-default">
+		<div class="panel-body">
+		<form id="myform">
+			<div class="col-xs-12 col-sm-2 col-md-2 col-lg-2">
+				<div class="input-group date" id="datepicker">
+					<input class="form-control" type="text">
+					<span style="cursor:pointer;" class="input-group-addon">
+						<span class="glyphicon glyphicon-calendar"></span>
+					</span>
+				</div>
+			</div>
+			<div class="col-xs-12 col-sm-2 col-md-2 col-lg-2">
+				<select class="form-control">
+				  <option>Drop No 1</option>
+				  <option>Drop No 2</option>
+				  <option>Drop No 3</option>
+				  <option>Drop No 4</option>
+				  <option>Drop No 5</option>
+				</select>
+			</div>
+			<div class="col-xs-12 col-sm-2 col-md-2 col-lg-2">
+				<select class="form-control">
+				  <option>Longivity Test</option>
+				  <option>Burst Test</option>
+				</select>
+			</div>
+			<div class="col-xs-12 col-sm-2 col-md-2 col-lg-2">
+				<select class="form-control">
+				  <option>Users 100</option>
+				  <option>Users 200</option>
+				  <option>Users 300</option>
+				  <option>Users 400</option>
+				  <option>Users 500</option>
+				</select>
+			</div>
+			<div class="col-xs-12 col-sm-2 col-md-2 col-lg-2">
+				<select class="form-control">
+				  <option>Functional Issues</option>
+				  <option>Performance Issues</option>
+				  <option>Passed Simulations</option>
+				</select>
+			</div>
+			<div class="col-xs-12 col-sm-2 col-md-2 col-lg-2">
+				 <input type="submit" class="btn btn-default" value="Submit" form="myform">
+			</div>
+		</form>
+		</div>
+	</div>
+	<div class="panel panel-default">
+		<div class="panel-body">
+			<table id="table-javascript"></table>
+		</div>
+	</div>
+	<div class="clearfix"></div>
+    </body>
+    <script>
+		$(function () {
+			$('#table-javascript').bootstrapTable({
+				method: 'get',
+				url: 'data/25Aug2015_PEReports.json',
+                cache: false,
+                height: 400,
+                striped: true,
+                pagination: true,
+                pageSize: 5,
+                pageList: [5, 10, 15, 20, 200],
+                search: true,
+                showColumns: true,
+                showRefresh: true,
+                minimumCountColumns: 2,
+				clickToSelect: true,
+				responseHandler:function(res){
+                    res.forEach(function(val){
+                        if(val.build_status == "FAILURE"){
+                            val.build_status = "RED";
+                        }
+						if(val.build_status == "PASS"){
+                            val.build_status = "GREEN";
+                        }
+						if(val.build_status == "ABORT"){
+                            val.build_status = "GREY";
+                        }
+                    })
+                    return res;
+                },
+				columns: [{
+					field: 'pillar',
+					title: 'Pillar',
+					align: 'right',
+					valign: 'bottom',
+					sortable: true
+				},{
+					field: 'simulation_name',
+					title: 'Simulation',
+					align: 'right',
+					valign: 'bottom',
+					sortable: true
+				},{
+					field: 'ramp_user_count',
+					title: 'Concurrent Users',
+					align: 'right',
+					valign: 'bottom',
+					sortable: true
+				},{
+					field: 'build_status',
+					title: 'Status',
+					align: 'right',
+					valign: 'bottom',
+					sortable: true
+				},{
+					field: 'actual_nintyfive_percentile',
+					title: '95th Percentile',
+					align: 'right',
+					valign: 'bottom',
+					sortable: true
+				},{
+					field: 'console_errors',
+					title: 'Issues',
+					align: 'right',
+					valign: 'bottom'
+				}]
+		   });	
+        });
+	</script>
+		<script>
+		var currentDate = new Date();  
+		$("#datepicker").datepicker( "setDate", currentDate );
+		
+			var data =[];
+			var loadPEdata = function() {
+				$.ajax({
+					url: "data/date.json",
+					method: "GET",
+					dataType: "JSON",
+					contentType: "application/json",
+					success: function(response) {
+						console.log(response);
+						data.push(response);
+					}
+				})
+			}
+		$(function() {
+			$('#datepicker').datepicker({
+				autoclose:true,
+			})
+			$('#datepicker').datepicker().datepicker('update')
+			.load(function() {
+				loadPEdata();
+			})
+			.on("changeDate", function(e){
+				console.log(e.date);
+				$('#datepicker').datepicker('hide');
+				loadPEdata();
+			});
+		});
+	</script>
+</html>
